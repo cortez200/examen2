@@ -21,7 +21,6 @@
             border-radius: 10px; 
         }
 
-        /* ARREGLO DEFINITIVO PARA EL BOTÓN CHUECO */
         .form-control[type="file"] {
             padding: 0;
             display: flex;
@@ -130,55 +129,70 @@
     <script>
         const showPreview = (src) => { document.getElementById('img_preview').src = src; document.getElementById('pnl_preview').style.display = 'flex'; };
         async function cargarTodo() {
-            const [resT, resP] = await Promise.all([fetch('/api/tiendas'), fetch('/api/productos')]);
-            const tiendas = await resT.json();
-            const productos = await resP.json();
-            const select = document.getElementById('pTienda');
-            const tBodyT = document.getElementById('tablaTiendas');
-            select.innerHTML = '<option value="">Seleccione...</option>';
-            tBodyT.innerHTML = '';
-            tiendas.forEach(t => {
-                select.innerHTML += `<option value="${t.id_tienda}">${t.nombre}</option>`;
-                tBodyT.innerHTML += `<tr style="background: white;"><td class="text-dark-custom small">${t.nombre}</td><td>
-                    <button class="btn btn-sm text-warning" onclick='editarTienda(${JSON.stringify(t)})'><i class="bi bi-pencil-fill"></i></button>
-                    <button class="btn btn-sm text-danger" onclick="eliminarTienda(${t.id_tienda})"><i class="bi bi-trash-fill"></i></button>
-                </td></tr>`;
-            });
-            const tBodyP = document.getElementById('tablaProductos');
-            tBodyP.innerHTML = '';
-            productos.forEach((p, i) => {
-                const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img shadow-sm" onclick="showPreview(this.src)">` : '<div class="bg-light rounded d-flex align-items-center justify-content-center mx-auto" style="width:60px; height:60px; border: 1px dashed #cbd5e1;"><i class="bi bi-camera-fill fs-3 text-secondary"></i></div>';
-                const prodData = JSON.stringify(p).replace(/"/g, '&quot;');
-                tBodyP.innerHTML += `<tr style="background: white;">
-                    <td class="text-secondary-custom">${i+1}</td>
-                    <td>${img}</td>
-                    <td class="text-dark-custom">${p.nombre}</td>
-                    <td class="fw-bold text-primary">S/ ${p.precio}</td>
-                    <td><span class="badge badge-tienda text-dark">${p.tienda}</span></td>
-                    <td>
-                        <button class="btn btn-sm text-warning" onclick='editarProd(${prodData})'><i class="bi bi-pencil-fill fs-5"></i></button>
-                        <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill fs-5"></i></button>
+            try {
+                const [resT, resP] = await Promise.all([fetch('/api/tiendas'), fetch('/api/productos')]);
+                const tiendas = await resT.json();
+                const productos = await resP.json();
+                
+                const select = document.getElementById('pTienda');
+                const tBodyT = document.getElementById('tablaTiendas');
+                select.innerHTML = '<option value="">Seleccione...</option>';
+                tBodyT.innerHTML = '';
+                
+                tiendas.forEach(t => {
+                    select.innerHTML += `<option value="${t.id_tienda}">${t.nombre}</option>`;
+                    tBodyT.innerHTML += `<tr style="background: white;"><td class="text-dark-custom small">${t.nombre}</td><td>
+                        <button class="btn btn-sm text-warning" onclick='editarTienda(${JSON.stringify(t)})'><i class="bi bi-pencil-fill"></i></button>
+                        <button class="btn btn-sm text-danger" onclick="eliminarTienda(${t.id_tienda})"><i class="bi bi-trash-fill"></i></button>
                     </td></tr>`;
-            });
+                });
+
+                const tBodyP = document.getElementById('tablaProductos');
+                tBodyP.innerHTML = '';
+                productos.forEach((p, i) => {
+                    const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img shadow-sm" onclick="showPreview(this.src)">` : '<div class="bg-light rounded d-flex align-items-center justify-content-center mx-auto" style="width:60px; height:60px; border: 1px dashed #cbd5e1;"><i class="bi bi-camera-fill fs-3 text-secondary"></i></div>';
+                    const prodData = JSON.stringify(p).replace(/"/g, '&quot;');
+                    tBodyP.innerHTML += `<tr style="background: white;">
+                        <td class="text-secondary-custom">${i+1}</td>
+                        <td>${img}</td>
+                        <td class="text-dark-custom">${p.nombre}</td>
+                        <td class="fw-bold text-primary">S/ ${p.precio}</td>
+                        <td><span class="badge badge-tienda text-dark">${p.tienda}</span></td>
+                        <td>
+                            <button class="btn btn-sm text-warning" onclick='editarProd(${prodData})'><i class="bi bi-pencil-fill fs-5"></i></button>
+                            <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill fs-5"></i></button>
+                        </td></tr>`;
+                });
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+            }
         }
+
         document.getElementById('formTienda').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('tiendaId').value;
-            const data = { nombre: document.getElementById('tNombre').value, direccion: document.getElementById('tDireccion').value };
+            const data = { 
+                nombre: document.getElementById('tNombre').value, 
+                direccion: document.getElementById('tDireccion').value 
+            };
             await fetch(id ? `/api/tiendas/${id}` : '/api/tiendas', {
                 method: id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            e.target.reset(); document.getElementById('tiendaId').value = '';
+            e.target.reset(); 
+            document.getElementById('tiendaId').value = '';
+            document.getElementById('btnGuardarTienda').textContent = 'GUARDAR TIENDA';
             cargarTodo();
         };
+
         const editarTienda = (t) => {
             document.getElementById('tiendaId').value = t.id_tienda;
             document.getElementById('tNombre').value = t.nombre;
             document.getElementById('tDireccion').value = t.direccion;
             document.getElementById('btnGuardarTienda').textContent = 'ACTUALIZAR TIENDA';
         };
+
         async function eliminarTienda(id) {
             if(confirm('¿Eliminar tienda?')) {
                 const res = await fetch(`/api/tiendas/${id}`, { method: 'DELETE' });
@@ -187,15 +201,23 @@
                 cargarTodo();
             }
         }
+
         document.getElementById('formProducto').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('productoId').value;
             const formData = new FormData(e.target);
-            await fetch(id ? `/api/productos/${id}` : '/api/productos', { method: id ? 'PUT' : 'POST', body: formData });
-            e.target.reset(); document.getElementById('productoId').value = '';
+            
+            await fetch(id ? `/api/productos/${id}` : '/api/productos', { 
+                method: id ? 'PUT' : 'POST', 
+                body: formData 
+            });
+            
+            e.target.reset(); 
+            document.getElementById('productoId').value = '';
             document.getElementById('btnGuardarProd').textContent = 'GUARDAR PRODUCTO';
             cargarTodo();
         };
+
         const editarProd = (p) => {
             document.getElementById('productoId').value = p.id_producto;
             document.getElementById('pNombre').value = p.nombre;
@@ -204,7 +226,14 @@
             document.getElementById('btnGuardarProd').textContent = 'ACTUALIZAR PRODUCTO';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-        const eliminarProd = async (id) => { if(confirm('¿Eliminar producto?')) { await fetch(`/api/productos/${id}`, { method: 'DELETE' }); cargarTodo(); } };
+
+        const eliminarProd = async (id) => { 
+            if(confirm('¿Eliminar producto?')) { 
+                await fetch(`/api/productos/${id}`, { method: 'DELETE' }); 
+                cargarTodo(); 
+            } 
+        };
+
         cargarTodo();
     </script>
 </body>
