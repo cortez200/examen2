@@ -21,7 +21,7 @@
             border-radius: 10px; 
         }
 
-        /* ARREGLO DE PLACEHOLDERS (EJEMPOS) */
+        /* ARREGLO DE PLACEHOLDERS (EJEMPLOS VISIBLES) */
         .form-control::placeholder { 
             color: #94a3b8 !important; 
             opacity: 1; 
@@ -41,7 +41,7 @@
         
         #pnl_preview { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         #img_preview { max-width: 80%; border: 4px solid var(--accent); border-radius: 15px; }
-        .badge-tienda { background: linear-gradient(45deg, #0ea5e9, #2563eb); padding: 8px 12px; border-radius: 8px; color: white; }
+        .badge-tienda { background: linear-gradient(45deg, #0ea5e9, #2563eb); padding: 8px 12px; border-radius: 8px; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -143,7 +143,7 @@
                 
                 tiendas.forEach(t => {
                     select.innerHTML += `<option value="${t.id_tienda}">${t.nombre}</option>`;
-                    tBodyT.innerHTML += `<tr><td class="text-dark-custom">${t.nombre}</td><td>
+                    tBodyT.innerHTML += `<tr style="background: white;"><td class="text-dark-custom">${t.nombre}</td><td>
                         <button class="btn btn-sm text-warning" onclick='editarTienda(${JSON.stringify(t)})'><i class="bi bi-pencil-fill"></i></button>
                         <button class="btn btn-sm text-danger" onclick="eliminarTienda(${t.id_tienda})"><i class="bi bi-trash-fill"></i></button>
                     </td></tr>`;
@@ -191,11 +191,18 @@
         };
 
         async function eliminarTienda(id) {
-            if(confirm('¿Eliminar tienda?')) {
-                const res = await fetch(`/api/tiendas/${id}`, { method: 'DELETE' });
-                const data = await res.json();
-                if(data.error) alert("No se puede eliminar: tiene productos");
-                cargarTodo();
+            if(confirm('¿Estás seguro de eliminar esta tienda?')) {
+                try {
+                    const res = await fetch(`/api/tiendas/${id}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (res.ok) {
+                        cargarTodo();
+                    } else {
+                        alert(data.error || "No se puede eliminar: tiene productos asociados.");
+                    }
+                } catch (e) {
+                    alert("Error en el servidor al intentar eliminar.");
+                }
             }
         }
 
@@ -223,7 +230,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        const eliminarProd = async (id) => { if(confirm('¿Eliminar?')) { await fetch(`/api/productos/${id}`, { method: 'DELETE' }); cargarTodo(); } };
+        const eliminarProd = async (id) => { if(confirm('¿Eliminar producto?')) { await fetch(`/api/productos/${id}`, { method: 'DELETE' }); cargarTodo(); } };
 
         cargarTodo();
     </script>
