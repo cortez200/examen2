@@ -21,6 +21,12 @@
             border-radius: 10px; 
         }
 
+        /* ARREGLO PARA QUE LOS EJEMPLOS SE VEAN CLAROS */
+        .form-control::placeholder { 
+            color: #94a3b8 !important; 
+            opacity: 1; 
+        }
+
         .form-control[type="file"] { padding: 0; display: flex; align-items: center; }
         .form-control[type="file"]::-webkit-file-upload-button {
             background-color: #334155; color: white; border: none;
@@ -80,11 +86,11 @@
                             <div class="row g-3">
                                 <div class="col-md-7">
                                     <label class="form-label">Nombre del Artículo</label>
-                                    <input type="text" class="form-control" name="nombre" id="pNombre" required>
+                                    <input type="text" class="form-control" name="nombre" id="pNombre" placeholder="Ej. Monitor Pro 24'" required>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label">Precio (S/)</label>
-                                    <input type="number" class="form-control" name="precio" id="pPrecio" step="0.01" required>
+                                    <input type="number" class="form-control" name="precio" id="pPrecio" step="0.01" placeholder="Ej. 149.90" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Tienda / Categoría</label>
@@ -170,13 +176,17 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            e.target.reset(); document.getElementById('tiendaId').value = ''; cargarTodo();
+            e.target.reset(); 
+            document.getElementById('tiendaId').value = '';
+            document.getElementById('btnGuardarTienda').textContent = 'GUARDAR TIENDA';
+            cargarTodo();
         };
 
         const editarTienda = (t) => {
             document.getElementById('tiendaId').value = t.id_tienda;
             document.getElementById('tNombre').value = t.nombre;
             document.getElementById('tDireccion').value = t.direccion;
+            document.getElementById('btnGuardarTienda').textContent = 'ACTUALIZAR TIENDA';
         };
 
         async function eliminarTienda(id) {
@@ -197,7 +207,10 @@
             const method = id ? 'PUT' : 'POST';
 
             await fetch(url, { method, body: formData });
-            e.target.reset(); document.getElementById('productoId').value = ''; cargarTodo();
+            e.target.reset(); 
+            document.getElementById('productoId').value = ''; 
+            document.getElementById('btnGuardarProd').textContent = 'GUARDAR PRODUCTO';
+            cargarTodo();
         };
 
         const editarProd = (p) => {
@@ -205,6 +218,8 @@
             document.getElementById('pNombre').value = p.nombre;
             document.getElementById('pPrecio').value = p.precio;
             document.getElementById('pTienda').value = p.id_tienda;
+            document.getElementById('btnGuardarProd').textContent = 'ACTUALIZAR PRODUCTO';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         const eliminarProd = async (id) => { if(confirm('¿Eliminar?')) { await fetch(`/api/productos/${id}`, { method: 'DELETE' }); cargarTodo(); } };
