@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistemas de Gestión | Pro</title>
+    <title>Sistemas de Gestión | Adrian Cortez</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -21,40 +21,29 @@
             border-radius: 10px; 
         }
 
-        .form-control[type="file"] {
-            padding: 0;
-            display: flex;
-            align-items: center;
-        }
+        .form-control[type="file"] { padding: 0; display: flex; align-items: center; }
         .form-control[type="file"]::-webkit-file-upload-button {
-            background-color: #334155;
-            color: white;
-            border: none;
-            border-right: 2px solid #475569;
-            height: 50px;
-            margin: 0;
-            margin-right: 15px;
-            padding: 0 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            background-color: #334155; color: white; border: none;
+            border-right: 2px solid #475569; height: 50px; margin: 0;
+            margin-right: 15px; padding: 0 20px; cursor: pointer;
         }
 
-        .form-control::placeholder { color: #94a3b8 !important; opacity: 1; }
-        input:-webkit-autofill { -webkit-text-fill-color: white !important; -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important; }
         .table-container { background-color: white; border-radius: 12px; overflow: hidden; margin-top: 10px; }
-        .table thead th { background-color: #1e293b !important; color: var(--accent) !important; padding: 12px; font-size: 0.8rem; }
+        .table thead th { background-color: #1e293b !important; color: var(--accent) !important; padding: 12px; }
         .text-dark-custom { color: #1e293b !important; font-weight: 700; }
-        .text-secondary-custom { color: #64748b !important; font-weight: bold; font-size: 0.85rem; }
-        .zoom-img { cursor: pointer; object-fit: cover; width: 60px; height: 60px; border-radius: 10px; border: 2px solid #e2e8f0; }
+        .zoom-img { cursor: pointer; object-fit: cover; width: 60px; height: 60px; border-radius: 10px; }
+        
         #pnl_preview { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         #img_preview { max-width: 80%; border: 4px solid var(--accent); border-radius: 15px; }
-        .badge-tienda { background: linear-gradient(45deg, #0ea5e9, #2563eb); padding: 10px 18px; border-radius: 10px; color: white; font-weight: bold; }
+        .badge-tienda { background: linear-gradient(45deg, #0ea5e9, #2563eb); padding: 8px 12px; border-radius: 8px; color: white; }
     </style>
 </head>
 <body>
     <div id="pnl_preview" onclick="this.style.display='none'"><img id="img_preview" src=""></div>
+    
     <div class="container py-5">
-        <h2 class="text-center fw-bold mb-5"><i class="bi bi-shield-check-fill me-2" style="color: var(--accent);"></i>ADMINISTRACIÓN DE INVENTARIO</h2>
+        <h2 class="text-center fw-bold mb-5"><i class="bi bi-shield-check-fill me-2" style="color: var(--accent);"></i>SISTEMA DE INVENTARIO</h2>
+        
         <div class="row">
             <div class="col-lg-4">
                 <div class="card shadow-lg">
@@ -64,13 +53,13 @@
                             <input type="hidden" id="tiendaId">
                             <div class="mb-3">
                                 <label class="form-label">Nombre Tienda</label>
-                                <input type="text" class="form-control" id="tNombre" placeholder="Ej. Sucursal Sur" required>
+                                <input type="text" class="form-control" id="tNombre" placeholder="Ej. Sucursal Trujillo" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Dirección</label>
                                 <input type="text" class="form-control" id="tDireccion" placeholder="Ej. Av. Larco 123" required>
                             </div>
-                            <button type="submit" id="btnGuardarTienda" class="btn btn-info w-100 fw-bold text-dark">GUARDAR TIENDA</button>
+                            <button type="submit" id="btnGuardarTienda" class="btn btn-info w-100 fw-bold">GUARDAR TIENDA</button>
                         </form>
                     </div>
                 </div>
@@ -81,20 +70,21 @@
                     </table>
                 </div>
             </div>
+
             <div class="col-lg-8">
                 <div class="card shadow-lg">
                     <div class="card-header border-secondary py-3 text-center"><h6 class="mb-0">REGISTRAR PRODUCTO</h6></div>
                     <div class="card-body">
                         <form id="formProducto">
-                            <input type="hidden" id="productoId">
+                            <input type="hidden" id="productoId" name="id">
                             <div class="row g-3">
                                 <div class="col-md-7">
                                     <label class="form-label">Nombre del Artículo</label>
-                                    <input type="text" class="form-control" name="nombre" id="pNombre" placeholder="Ej. Monitor Pro 24'" required>
+                                    <input type="text" class="form-control" name="nombre" id="pNombre" required>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label">Precio (S/)</label>
-                                    <input type="number" class="form-control" name="precio" id="pPrecio" step="0.01" placeholder="Ej. 149.90" required>
+                                    <input type="number" class="form-control" name="precio" id="pPrecio" step="0.01" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Tienda / Categoría</label>
@@ -107,7 +97,7 @@
                                     <input type="file" class="form-control" name="imagen" accept="image/*">
                                 </div>
                                 <div class="col-12 text-end mt-4">
-                                    <button type="submit" id="btnGuardarProd" class="btn btn-primary px-5 py-2 fw-bold text-dark">GUARDAR PRODUCTO</button>
+                                    <button type="submit" id="btnGuardarProd" class="btn btn-primary px-5 fw-bold">GUARDAR PRODUCTO</button>
                                 </div>
                             </div>
                         </form>
@@ -121,13 +111,19 @@
                 </div>
             </div>
         </div>
+
         <footer class="mt-5 text-center">
             <p class="text-secondary small mb-1">PROYECTO DESARROLLADO POR:</p>
-            <h4 class="fw-bold text-white uppercase" style="letter-spacing: 2px;">ADRIAN CORTEZ INFANTES</h4>
+            <h4 class="fw-bold text-white" style="letter-spacing: 2px;">ADRIAN CORTEZ INFANTES</h4>
         </footer>
     </div>
+
     <script>
-        const showPreview = (src) => { document.getElementById('img_preview').src = src; document.getElementById('pnl_preview').style.display = 'flex'; };
+        const showPreview = (src) => { 
+            document.getElementById('img_preview').src = src; 
+            document.getElementById('pnl_preview').style.display = 'flex'; 
+        };
+
         async function cargarTodo() {
             try {
                 const [resT, resP] = await Promise.all([fetch('/api/tiendas'), fetch('/api/productos')]);
@@ -141,7 +137,7 @@
                 
                 tiendas.forEach(t => {
                     select.innerHTML += `<option value="${t.id_tienda}">${t.nombre}</option>`;
-                    tBodyT.innerHTML += `<tr style="background: white;"><td class="text-dark-custom small">${t.nombre}</td><td>
+                    tBodyT.innerHTML += `<tr><td class="text-dark-custom">${t.nombre}</td><td>
                         <button class="btn btn-sm text-warning" onclick='editarTienda(${JSON.stringify(t)})'><i class="bi bi-pencil-fill"></i></button>
                         <button class="btn btn-sm text-danger" onclick="eliminarTienda(${t.id_tienda})"><i class="bi bi-trash-fill"></i></button>
                     </td></tr>`;
@@ -150,54 +146,44 @@
                 const tBodyP = document.getElementById('tablaProductos');
                 tBodyP.innerHTML = '';
                 productos.forEach((p, i) => {
-                    const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img shadow-sm" onclick="showPreview(this.src)">` : '<div class="bg-light rounded d-flex align-items-center justify-content-center mx-auto" style="width:60px; height:60px; border: 1px dashed #cbd5e1;"><i class="bi bi-camera-fill fs-3 text-secondary"></i></div>';
-                    const prodData = JSON.stringify(p).replace(/"/g, '&quot;');
-                    tBodyP.innerHTML += `<tr style="background: white;">
-                        <td class="text-secondary-custom">${i+1}</td>
+                    const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img" onclick="showPreview(this.src)">` : '<i class="bi bi-image text-secondary fs-2"></i>';
+                    tBodyP.innerHTML += `<tr>
+                        <td class="text-secondary">${i+1}</td>
                         <td>${img}</td>
                         <td class="text-dark-custom">${p.nombre}</td>
                         <td class="fw-bold text-primary">S/ ${p.precio}</td>
-                        <td><span class="badge badge-tienda text-dark">${p.tienda}</span></td>
+                        <td><span class="badge badge-tienda text-dark">${p.tienda || 'Sin tienda'}</span></td>
                         <td>
-                            <button class="btn btn-sm text-warning" onclick='editarProd(${prodData})'><i class="bi bi-pencil-fill fs-5"></i></button>
-                            <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill fs-5"></i></button>
+                            <button class="btn btn-sm text-warning" onclick='editarProd(${JSON.stringify(p)})'><i class="bi bi-pencil-fill"></i></button>
+                            <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill"></i></button>
                         </td></tr>`;
                 });
-            } catch (error) {
-                console.error("Error cargando datos:", error);
-            }
+            } catch (e) { console.error("Error:", e); }
         }
 
         document.getElementById('formTienda').onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('tiendaId').value;
-            const data = { 
-                nombre: document.getElementById('tNombre').value, 
-                direccion: document.getElementById('tDireccion').value 
-            };
+            const data = { nombre: document.getElementById('tNombre').value, direccion: document.getElementById('tDireccion').value };
             await fetch(id ? `/api/tiendas/${id}` : '/api/tiendas', {
                 method: id ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            e.target.reset(); 
-            document.getElementById('tiendaId').value = '';
-            document.getElementById('btnGuardarTienda').textContent = 'GUARDAR TIENDA';
-            cargarTodo();
+            e.target.reset(); document.getElementById('tiendaId').value = ''; cargarTodo();
         };
 
         const editarTienda = (t) => {
             document.getElementById('tiendaId').value = t.id_tienda;
             document.getElementById('tNombre').value = t.nombre;
             document.getElementById('tDireccion').value = t.direccion;
-            document.getElementById('btnGuardarTienda').textContent = 'ACTUALIZAR TIENDA';
         };
 
         async function eliminarTienda(id) {
             if(confirm('¿Eliminar tienda?')) {
                 const res = await fetch(`/api/tiendas/${id}`, { method: 'DELETE' });
                 const data = await res.json();
-                if (data.error) alert(data.error);
+                if(data.error) alert("No se puede eliminar: tiene productos");
                 cargarTodo();
             }
         }
@@ -207,15 +193,11 @@
             const id = document.getElementById('productoId').value;
             const formData = new FormData(e.target);
             
-            await fetch(id ? `/api/productos/${id}` : '/api/productos', { 
-                method: id ? 'PUT' : 'POST', 
-                body: formData 
-            });
-            
-            e.target.reset(); 
-            document.getElementById('productoId').value = '';
-            document.getElementById('btnGuardarProd').textContent = 'GUARDAR PRODUCTO';
-            cargarTodo();
+            const url = id ? `/api/productos/${id}` : '/api/productos';
+            const method = id ? 'PUT' : 'POST';
+
+            await fetch(url, { method, body: formData });
+            e.target.reset(); document.getElementById('productoId').value = ''; cargarTodo();
         };
 
         const editarProd = (p) => {
@@ -223,16 +205,9 @@
             document.getElementById('pNombre').value = p.nombre;
             document.getElementById('pPrecio').value = p.precio;
             document.getElementById('pTienda').value = p.id_tienda;
-            document.getElementById('btnGuardarProd').textContent = 'ACTUALIZAR PRODUCTO';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        const eliminarProd = async (id) => { 
-            if(confirm('¿Eliminar producto?')) { 
-                await fetch(`/api/productos/${id}`, { method: 'DELETE' }); 
-                cargarTodo(); 
-            } 
-        };
+        const eliminarProd = async (id) => { if(confirm('¿Eliminar?')) { await fetch(`/api/productos/${id}`, { method: 'DELETE' }); cargarTodo(); } };
 
         cargarTodo();
     </script>
