@@ -21,7 +21,7 @@
             border-radius: 10px; 
         }
 
-        /* ARREGLO PARA QUE LOS EJEMPLOS SE VEAN CLAROS */
+        /* ARREGLO DE PLACEHOLDERS (EJEMPOS) */
         .form-control::placeholder { 
             color: #94a3b8 !important; 
             opacity: 1; 
@@ -37,7 +37,7 @@
         .table-container { background-color: white; border-radius: 12px; overflow: hidden; margin-top: 10px; }
         .table thead th { background-color: #1e293b !important; color: var(--accent) !important; padding: 12px; }
         .text-dark-custom { color: #1e293b !important; font-weight: 700; }
-        .zoom-img { cursor: pointer; object-fit: cover; width: 60px; height: 60px; border-radius: 10px; }
+        .zoom-img { cursor: pointer; object-fit: cover; width: 60px; height: 60px; border-radius: 10px; border: 2px solid #e2e8f0; }
         
         #pnl_preview { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         #img_preview { max-width: 80%; border: 4px solid var(--accent); border-radius: 15px; }
@@ -152,16 +152,17 @@
                 const tBodyP = document.getElementById('tablaProductos');
                 tBodyP.innerHTML = '';
                 productos.forEach((p, i) => {
-                    const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img" onclick="showPreview(this.src)">` : '<i class="bi bi-image text-secondary fs-2"></i>';
-                    tBodyP.innerHTML += `<tr>
-                        <td class="text-secondary">${i+1}</td>
+                    const img = p.imagen ? `<img src="${p.imagen}" class="zoom-img shadow-sm" onclick="showPreview(this.src)">` : '<div class="bg-light rounded d-flex align-items-center justify-content-center mx-auto" style="width:60px; height:60px; border: 1px dashed #cbd5e1;"><i class="bi bi-camera-fill fs-3 text-secondary"></i></div>';
+                    const prodData = JSON.stringify(p).replace(/"/g, '&quot;');
+                    tBodyP.innerHTML += `<tr style="background: white;">
+                        <td class="text-secondary-custom">${i+1}</td>
                         <td>${img}</td>
                         <td class="text-dark-custom">${p.nombre}</td>
                         <td class="fw-bold text-primary">S/ ${p.precio}</td>
                         <td><span class="badge badge-tienda text-dark">${p.tienda || 'Sin tienda'}</span></td>
                         <td>
-                            <button class="btn btn-sm text-warning" onclick='editarProd(${JSON.stringify(p)})'><i class="bi bi-pencil-fill"></i></button>
-                            <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill"></i></button>
+                            <button class="btn btn-sm text-warning" onclick='editarProd(${prodData})'><i class="bi bi-pencil-fill fs-5"></i></button>
+                            <button class="btn btn-sm text-danger" onclick="eliminarProd(${p.id_producto})"><i class="bi bi-trash-fill fs-5"></i></button>
                         </td></tr>`;
                 });
             } catch (e) { console.error("Error:", e); }
