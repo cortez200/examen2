@@ -118,6 +118,25 @@ app.post('/api/productos', upload.single('imagen'), (req, res) => {
     }
 });
 
+// ESTA ES LA RUTA QUE FALTABA PARA EDITAR PRODUCTOS
+app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
+    const { nombre, precio, id_tienda } = req.body;
+    const id = req.params.id;
+
+    db.query('SELECT imagen FROM Productos WHERE id_producto = ?', [id], (err, results) => {
+        if (err || results.length === 0) return res.status(500).json({ error: "Error al buscar producto" });
+        
+        // Si subes foto nueva, usa la nueva. Si no, deja la que ya estaba.
+        let imagen = req.file ? `/uploads/${req.file.filename}` : results[0].imagen;
+
+        const query = 'UPDATE Productos SET nombre = ?, precio = ?, imagen = ?, id_tienda = ? WHERE id_producto = ?';
+        db.query(query, [nombre, precio, imagen, id_tienda, id], (err) => {
+            if (err) return res.status(500).json({ error: "Error al actualizar" });
+            res.json({ message: 'OK' });
+        });
+    });
+});
+
 app.delete('/api/productos/:id', (req, res) => {
     db.query('DELETE FROM Productos WHERE id_producto = ?', [req.params.id], (err) => {
         if (err) return res.status(500).json(err);

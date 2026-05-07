@@ -21,7 +21,6 @@
             border-radius: 10px; 
         }
 
-        /* ARREGLO DE PLACEHOLDERS (EJEMPLOS VISIBLES) */
         .form-control::placeholder { 
             color: #94a3b8 !important; 
             opacity: 1; 
@@ -211,6 +210,7 @@
             const id = document.getElementById('productoId').value;
             const formData = new FormData(e.target);
             
+            // SI HAY ID ES PUT, SI NO ES POST
             const url = id ? `/api/productos/${id}` : '/api/productos';
             const method = id ? 'PUT' : 'POST';
 
