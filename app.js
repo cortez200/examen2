@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ASEGURAR QUE LA CARPETA EXISTE CON RUTA ABSOLUTA
 const uploadDir = path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -28,10 +27,9 @@ const db = mysql.createConnection({
 });
 
 db.connect(err => {
-    if (err) return console.error('Error de conexión:', err.message);
+    if (err) return console.error('Error:', err.message);
     console.log('✅ Conectado a Aiven MySQL');
     
-    // Creación de tablas
     db.query(`CREATE TABLE IF NOT EXISTS Tiendas (
         id_tienda INT AUTO_INCREMENT PRIMARY KEY, 
         nombre VARCHAR(100), 
@@ -48,7 +46,6 @@ db.connect(err => {
     )`);
 });
 
-// CONFIGURACIÓN DE ALMACENAMIENTO CON RUTA ABSOLUTA (CORRECCIÓN PARA RENDER)
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir); 
@@ -59,7 +56,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// RUTAS PARA TIENDAS
 app.get('/api/tiendas', (req, res) => {
     db.query('SELECT * FROM Tiendas', (err, results) => {
         if (err) return res.status(500).json(err);
@@ -75,7 +71,22 @@ app.post('/api/tiendas', (req, res) => {
     });
 });
 
-// RUTAS PARA PRODUCTOS
+app.delete('/api/tiendas/:id', (req, res) => {
+    const id = req.params.id;
+    db.query('SELECT COUNT(*) AS total FROM Productos WHERE id_tienda = ?', [id], (err, results) => {
+        if (err) return res.status(500).json({ error: "Error de consulta" });
+        
+        if (results[0].total > 0) {
+            return res.status(400).json({ error: "No se puede eliminar: La tienda tiene productos asociados." });
+        }
+
+        db.query('DELETE FROM Tiendas WHERE id_tienda = ?', [id], (err) => {
+            if (err) return res.status(500).json({ error: "Error al eliminar" });
+            res.json({ message: 'OK' });
+        });
+    });
+});
+
 app.get('/api/productos', (req, res) => {
     const query = `
         SELECT p.*, t.nombre AS tienda 
@@ -91,8 +102,6 @@ app.get('/api/productos', (req, res) => {
 app.post('/api/productos', upload.single('imagen'), (req, res) => {
     try {
         const { nombre, precio, id_tienda } = req.body;
-        
-        // Verificamos si Multer guardó el archivo
         const imagen = req.file ? `/uploads/${req.file.filename}` : null;
         
         if (!id_tienda) {
@@ -101,15 +110,11 @@ app.post('/api/productos', upload.single('imagen'), (req, res) => {
 
         const query = 'INSERT INTO Productos (nombre, precio, imagen, id_tienda) VALUES (?, ?, ?, ?)';
         db.query(query, [nombre, precio, imagen, id_tienda], (err) => {
-            if (err) {
-                console.error("Error BD:", err);
-                return res.status(500).json({ error: "Error al insertar en la base de datos" });
-            }
+            if (err) return res.status(500).json({ error: "Error BD" });
             res.json({ message: 'OK' });
         });
     } catch (error) {
-        console.error("Error en el servidor:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
+        res.status(500).json({ error: "Error servidor" });
     }
 });
 
@@ -121,4 +126,4 @@ app.delete('/api/productos/:id', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor en puerto: ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Puerto: ${PORT}`));
